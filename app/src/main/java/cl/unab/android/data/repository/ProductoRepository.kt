@@ -1,13 +1,24 @@
 package cl.unab.android.data.repository
 
+import android.net.Uri
 import com.google.firebase.firestore.FirebaseFirestore
 import cl.unab.android.data.model.Producto
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
+import java.util.UUID
 
 class ProductoRepository {
 
     private val db = FirebaseFirestore.getInstance()
+    private val storage = FirebaseStorage.getInstance().reference
     private val collection = db.collection("productos") // nombre en Firestore
+
+    suspend fun uploadPdf(pdfUri: Uri): String {
+        val nombreArchivo = "fichas/${UUID.randomUUID()}.jpeg"
+        val ref = storage.child(nombreArchivo)
+        ref.putFile(pdfUri).await()
+        return ref.downloadUrl.await().toString()
+    }
 
     private val libros = db.collection("libros")
 

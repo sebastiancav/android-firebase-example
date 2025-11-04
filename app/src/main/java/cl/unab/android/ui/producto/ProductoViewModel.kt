@@ -1,5 +1,6 @@
 package cl.unab.android.ui.producto
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -38,6 +39,15 @@ class ProductoViewModel : ViewModel() {
     fun eliminarProducto(id: String) {
         viewModelScope.launch {
             repo.delete(id)
+            cargarProductos()
+        }
+    }
+
+    fun subirFicha(pdfUri: Uri, productoBase: Producto) {
+        viewModelScope.launch {
+            val url = repo.uploadPdf(pdfUri)
+            val actualizado = productoBase.copy(fichaUrl = url)
+            repo.update(actualizado)
             cargarProductos()
         }
     }

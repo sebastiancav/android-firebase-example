@@ -11,7 +11,9 @@ import cl.unab.android.data.model.Producto
 
 class ProductoAdapter(
     private var productos: List<Producto>,
-    private val onDelete: (Producto) -> Unit
+    private val onDelete: (Producto) -> Unit,
+    private val onUploadPdf: (Producto) -> Unit,
+    private val onViewPdf: (Producto) -> Unit
 ) : RecyclerView.Adapter<ProductoAdapter.ViewHolder>() {
 
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
@@ -19,6 +21,8 @@ class ProductoAdapter(
         val tvDescripcion: TextView = v.findViewById(R.id.tvDescripcion)
         val tvPrecio: TextView = v.findViewById(R.id.tvPrecio)
         val btnEliminar: Button = v.findViewById(R.id.btnEliminar)
+        val btnSubirPdf: Button = v.findViewById(R.id.btnSubirPdf)
+        val btnVerPdf: Button = v.findViewById(R.id.btnVerPdf)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,7 +36,20 @@ class ProductoAdapter(
         holder.tvNombre.text = p.nombre
         holder.tvDescripcion.text = p.descripcion
         holder.tvPrecio.text = "$${p.precio}"
+
         holder.btnEliminar.setOnClickListener { onDelete(p) }
+        holder.btnSubirPdf.setOnClickListener { onUploadPdf(p) }
+
+        // 🔹 Si tiene URL de ficha, activa el botón
+        if (p.fichaUrl != null) {
+            holder.btnVerPdf.isEnabled = true
+            holder.btnVerPdf.alpha = 1f
+        } else {
+            holder.btnVerPdf.isEnabled = false
+            holder.btnVerPdf.alpha = 0.5f
+        }
+
+        holder.btnVerPdf.setOnClickListener { onViewPdf(p) }
     }
 
     override fun getItemCount() = productos.size
