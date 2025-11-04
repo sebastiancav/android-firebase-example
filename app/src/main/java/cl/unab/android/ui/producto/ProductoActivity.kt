@@ -30,7 +30,11 @@ class ProductoActivity : AppCompatActivity() {
             onDelete = { vm.eliminarProducto(it.id) },
             onUploadPdf = {
                 productoSeleccionado = it
-                pdfLauncher.launch("application/pdf")
+                pdfLauncher.launch("*/*") // sin restriccion de archivos
+                //pdfLauncher.launch("image/*") // cualquier tipo de imagen
+                //pdfLauncher.launch("aplication/pdf") // solo pdf
+                //pdfLauncher.launch("image/gif") // solo imagenes .gif
+
             },
             onViewPdf = { producto ->
                 producto.fichaUrl?.let { url ->
